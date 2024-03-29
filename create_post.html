@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Đăng Bài Viết Mới</title>
+    <link rel="stylesheet" href="style.css"> <!-- Đảm bảo đường dẫn đến file CSS đúng -->
+</head>
+<body>
+    <h2>Đăng Bài Viết Mới</h2>
+    <form action="create_post.php" method="post">
+        <div class="form-group">
+            <label for="title">Tiêu Đề:</label>
+            <input type="text" id="title" name="title" required>
+        </div>
+        <div class="form-group">
+            <label for="content">Nội Dung:</label>
+            <textarea id="content" name="content" rows="10" required></textarea>
+        </div>
+        <input type="submit" value="Đăng Bài">
+    </form>
+</body>
+</html>
