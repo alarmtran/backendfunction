@@ -2,15 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Chi Tiết Bài Viết</title>
-    <link rel="stylesheet" href="style.css"> <!-- Link to style.css -->
+    <title>Post </title>
+    <link rel="stylesheet" href="style.css">
     <script>
         function toggleReplyForm(commentId, parentId = null) {
-            // Toggle the reply form visibility and set the parent_id value
             var form = document.getElementById('reply-form-' + commentId);
             if (form) {
                 var parentInput = form.querySelector("input[name='parent_id']");
-                parentInput.value = parentId; // If parentId is null, the value will be set to empty, which is okay for a new top-level reply
+                parentInput.value = parentId;
                 form.style.display = form.style.display === 'none' || form.style.display === '' ? 'block' : 'none';
             }
         }
@@ -18,10 +17,12 @@
 </head>
 <body>
     <?php
-    include 'db.php'; // Include database connection
+    include 'db.php';
+    session_start();
 
-    // Function to display replies recursively
-    function displayReplies($conn, $comment_id, $parent_id = null, $level = 0) {
+    $user_name = $_SESSION['username'];
+
+    function displayReplies($conn, $comment_id, $parent_id = null, $level = 0, $post_id, $user_name) {
         $reply_sql = "SELECT * FROM replies WHERE comment_id = $comment_id" . ($parent_id ? " AND parent_id = $parent_id" : " AND parent_id IS NULL") . " ORDER BY created_at DESC";
         $reply_result = $conn->query($reply_sql);
 
@@ -32,10 +33,10 @@
                 echo "<p>" . htmlspecialchars($reply["content"]) . "</p>";
                 echo "<p class='reply-meta'>Replied by: " . htmlspecialchars($reply["author"]) . " on " . $reply["created_at"];
                 echo " <button onclick='toggleReplyForm(" . $comment_id . ", " . $reply['id'] . ")'>Reply</button></p>";
-                displayReplies($conn, $comment_id, $reply['id'], $level + 1);
-                echo "</div>"; // End of .reply
+                displayReplies($conn, $comment_id, $reply['id'], $level + 1, $post_id, $user_name);
+                echo "</div>";
             }
-            echo "</div>"; // End of .replies
+            echo "</div>";
         }
     }
 
@@ -55,11 +56,11 @@
             echo "<h3>Leave a comment:</h3>";
             echo "<form action='post_comment.php' method='post'>";
             echo "<input type='hidden' name='post_id' value='" . $post_id . "'>";
-            echo "<input type='text' name='author' placeholder='Your name' required>";
+            echo "<input type='hidden' name='author' value='" . $user_name . "'>";
             echo "<textarea name='content' placeholder='Your comment' required></textarea>";
             echo "<button type='submit'>Submit comment</button>";
             echo "</form>";
-            echo "</div>"; // End of .comment-form
+            echo "</div>";
 
             $comment_sql = "SELECT * FROM comments WHERE post_id = $post_id ORDER BY created_at DESC";
             $comment_result = $conn->query($comment_sql);
@@ -72,24 +73,25 @@
                     echo "<p class='comment-meta'>Commented by: " . htmlspecialchars($comment["author"]) . " on " . $comment["created_at"];
                     echo "<button onclick='toggleReplyForm(" . $comment['id'] . ")'>Reply</button></p>";
 
-                    displayReplies($conn, $comment['id']);
+                    displayReplies($conn, $comment['id'], null, 0, $post_id, $user_name);
 
                     echo "<div class='reply-form' id='reply-form-" . $comment['id'] . "' style='display:none;'>";
                     echo "<form action='post_reply.php' method='post'>";
                     echo "<input type='hidden' name='comment_id' value='" . $comment['id'] . "'>";
+                    echo "<input type='hidden' name='post_id' value='" . $post_id . "'>";
                     echo "<input type='hidden' name='parent_id' value=''>";
-                    echo "<input type='text' name='author' placeholder='Your name' required>";
+                    echo "<input type='hidden' name='author' value='" . $user_name . "'>";
                     echo "<textarea name='content' placeholder='Your reply' required></textarea>";
                     echo "<button type='submit'>Submit reply</button>";
                     echo "</form>";
-                    echo "</div>"; // End of .reply-form
-                    echo "</div>"; // End of .comment
+                    echo "</div>";
+                    echo "</div>";
                 }
-                echo "</div>"; // End of .comments-section
+                echo "</div>";
             } else {
                 echo "<p>No comments yet.</p>";
             }
-            echo "</div>"; // End of .post-detail
+            echo "</div>";
         } else {
             echo "<p>The post does not exist.</p>";
         }

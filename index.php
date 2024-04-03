@@ -6,8 +6,8 @@ include 'db.php';
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Trang Chủ Forum</title>
-    <link rel="stylesheet" href="style.css"> <!-- Đảm bảo bạn đã tạo style.css -->
+    <title>Demo Forum</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
@@ -26,9 +26,8 @@ include 'db.php';
         if ($result->num_rows > 0) {
             while($row = $result->fetch_assoc()) {
                 echo "<div class='post'>";
-                // Cập nhật dòng dưới đây
                 echo "<h3><a href='post_detail.php?id=" . $row["id"] . "'>" . htmlspecialchars($row["title"]) . "</a></h3>";
-                echo "<p>" . nl2br(htmlspecialchars(substr($row["content"], 0, 200))) . "...</p>"; // Giới hạn nội dung hiển thị
+                echo "<p>" . nl2br(htmlspecialchars(substr($row["content"], 0, 200))) . "...</p>";
                 echo "<p>Posted by : " . htmlspecialchars($row["author"]) . " vào " . $row["created_at"] . "</p>";
                 echo "</div>";
             }

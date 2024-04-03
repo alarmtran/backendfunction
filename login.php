@@ -15,12 +15,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['loggedin'] = TRUE;
             $_SESSION['username'] = $username;
             $_SESSION['user_id'] = $row['id'];
-            echo "Đăng nhập thành công. <a href='index.php'>Trở về trang chủ</a>";
+            echo "Successful. <a href='index.php'>Go To Page</a>";
         } else {
-            echo "Mật khẩu không đúng.";
+            echo "Incorrect password.";
         }
     } else {
-        echo "Không tìm thấy tên người dùng.";
+        echo "Can't find this user.";
     }
 
     $conn->close();

@@ -1,5 +1,5 @@
 <?php
-include 'db.php'; // Sử dụng file db.php đã tạo ở các bước trước
+include 'db.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $conn->real_escape_string($_POST['username']);
@@ -10,7 +10,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if($result->num_rows > 0){
         echo "Username is already used in web <a href = 'register.html'> Register Again </a>";
     }else if ($conn->query($sql) === TRUE) {
-        echo "Successful. <a href='login.html'>Đăng nhập</a>";
+        echo "Successful. <a href='login.html'>Login</a>";
     } else {
         echo "Lỗi: " . $sql . "<br>" . $conn->error;
     }

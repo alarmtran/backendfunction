@@ -1,29 +1,33 @@
 <?php
-include 'db.php'; // Sử dụng file kết nối cơ sở dữ liệu đã thiết lập
+include 'db.php';
+session_start();
 
-// Kiểm tra xem dữ liệu gửi đến từ form có hợp lệ không
-if(isset($_POST['post_id'], $_POST['author'], $_POST['content']) && is_numeric($_POST['post_id'])) {
+if(isset($_POST['post_id'], $_POST['content']) && is_numeric($_POST['post_id']) && isset($_SESSION['username'])) {
     $post_id = $_POST['post_id'];
-    $author = $conn->real_escape_string(trim($_POST['author']));
+    $author = $conn->real_escape_string(trim($_SESSION['username']));
     $content = $conn->real_escape_string(trim($_POST['content']));
-    
-    // Tạo truy vấn để chèn bình luận mới vào cơ sở dữ liệu
-    $sql = "INSERT INTO comments (post_id, author, content, created_at) VALUES ('$post_id', '$author', '$content', NOW())";
-    
-    // Thực hiện truy vấn
-    if($conn->query($sql) === TRUE) {
+    $imagePath = null;
+    $sql = "INSERT INTO comments (post_id, author, content, image_path, created_at) VALUES (?, ?, ?, ?, NOW())";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("isss", $post_id, $author, $content, $imagePath);
+
+    if($stmt->execute()) {
         echo "Bình luận đã được gửi thành công.";
     } else {
         echo "Có lỗi xảy ra: " . $conn->error;
     }
+
+    $stmt->close();
 } else {
-    echo "Dữ liệu gửi đến không hợp lệ.";
+    echo "Dữ liệu gửi đến không hợp lệ hoặc bạn chưa đăng nhập.";
 }
 
-// Đóng kết nối cơ sở dữ liệu
 $conn->close();
 
-// Chuyển hướng người dùng trở lại bài viết
-header("Location: post_detail.php?id=" . $post_id);
+if(isset($post_id)) {
+    header("Location: post_detail.php?id=" . $post_id);
+} else {
+    header("Location: index.php"); 
+}
 exit();
 ?>
