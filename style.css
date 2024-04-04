@@ -160,5 +160,11 @@ body {
 .reply-level-3 {
     margin-left: 60px;
 }
+.comment img {
+    max-width: 200px;
+    height: auto;
+    display: block;
+    margin-top: 10px; /* Khoảng cách giữa hình ảnh và nội dung bình luận */
+}
 
 /* Có thể tiếp tục thêm nhiều lớp phân cấp nếu cần */
