@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 04, 2024 at 05:58 PM
+-- Generation Time: Apr 04, 2024 at 06:03 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -22,6 +22,10 @@ time_zone = "+00:00";
 --
 -- Database: `forum`
 --
+CREATE
+DATABASE IF NOT EXISTS `forum` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE
+`forum`;
 
 -- --------------------------------------------------------
 
@@ -29,15 +33,36 @@ time_zone = "+00:00";
 -- Table structure for table `comments`
 --
 
-CREATE TABLE `comments`
+CREATE TABLE IF NOT EXISTS `comments`
 (
-    `id`         int(255) NOT NULL,
-    `post_id`    int(255) NOT NULL,
-    `author`     varchar(255) NOT NULL,
-    `content`    text         NOT NULL,
-    `created_at` timestamp    NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp (),
-    `image_path` varchar(255)          DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+    `id`
+    int
+(
+    255
+) NOT NULL AUTO_INCREMENT,
+    `post_id` int
+(
+    255
+) NOT NULL,
+    `author` varchar
+(
+    255
+) NOT NULL,
+    `content` text NOT NULL,
+    `created_at` timestamp NOT NULL DEFAULT current_timestamp
+(
+) ON UPDATE current_timestamp
+(
+),
+    `image_path` varchar
+(
+    255
+) DEFAULT NULL,
+    PRIMARY KEY
+(
+    `id`
+)
+    ) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8mb4 COLLATE =utf8mb4_general_ci;
 
 --
 -- Dumping data for table `comments`
@@ -103,14 +128,30 @@ VALUES (1, 4, 'Trần Thanh Lâm', 'lâm', '2024-03-30 16:14:44', NULL),
 -- Table structure for table `posts`
 --
 
-CREATE TABLE `posts`
+CREATE TABLE IF NOT EXISTS `posts`
 (
-    `id`         int(11) NOT NULL,
-    `title`      varchar(255) NOT NULL,
-    `content`    text         NOT NULL,
-    `author`     varchar(255) NOT NULL,
-    `created_at` timestamp    NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+    `id`
+    int
+(
+    11
+) NOT NULL AUTO_INCREMENT,
+    `title` varchar
+(
+    255
+) NOT NULL,
+    `content` text NOT NULL,
+    `author` varchar
+(
+    255
+) NOT NULL,
+    `created_at` timestamp NOT NULL DEFAULT current_timestamp
+(
+),
+    PRIMARY KEY
+(
+    `id`
+)
+    ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE =utf8mb4_general_ci;
 
 --
 -- Dumping data for table `posts`
@@ -129,16 +170,19 @@ VALUES (1, 'Hello everyone !!!', 'This is basic demo', 'lamtran', '2024-03-29 07
 -- Table structure for table `replies`
 --
 
-CREATE TABLE `replies` (
-  `id` int(255) NOT NULL,
+CREATE TABLE IF NOT EXISTS `replies` (
+  `id` int(255) NOT NULL AUTO_INCREMENT,
   `comment_id` int(255) NOT NULL,
   `author` varchar(255) NOT NULL,
   `content` text NOT NULL,
   `image` varchar(255) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `parent_id` int(11) DEFAULT NULL,
-  `image_path` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `image_path` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `comment_id` (`comment_id`),
+  KEY `parent_id` (`parent_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `replies`
@@ -176,11 +220,13 @@ INSERT INTO `replies` (`id`, `comment_id`, `author`, `content`, `image`, `create
 -- Table structure for table `users`
 --
 
-CREATE TABLE `users` (
-  `id` int(11) NOT NULL,
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `password` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username` (`username`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
@@ -194,65 +240,6 @@ INSERT INTO `users` (`id`, `username`, `password`) VALUES
 (5, 'tabi', '111'),
 (6, 'lamtran', '1234'),
 (7, 'demo', '123');
-
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `comments`
---
-ALTER TABLE `comments`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `posts`
---
-ALTER TABLE `posts`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `replies`
---
-ALTER TABLE `replies`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `comment_id` (`comment_id`),
-  ADD KEY `parent_id` (`parent_id`);
-
---
--- Indexes for table `users`
---
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `username` (`username`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `comments`
---
-ALTER TABLE `comments`
-  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
-
---
--- AUTO_INCREMENT for table `posts`
---
-ALTER TABLE `posts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
--- AUTO_INCREMENT for table `replies`
---
-ALTER TABLE `replies`
-  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
-
---
--- AUTO_INCREMENT for table `users`
---
-ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- Constraints for dumped tables
