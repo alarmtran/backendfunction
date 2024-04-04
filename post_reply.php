@@ -10,8 +10,9 @@ if(isset($_POST['comment_id'], $_POST['content'], $_POST['post_id']) && is_numer
     $parent_id = isset($_POST['parent_id']) && $_POST['parent_id'] !== '' ? $_POST['parent_id'] : NULL;
     $imagePath = null;
 
-    if (isset($_FILES['reply_image']) && $_FILES['reply_image']['error'] == 0) {
-        $imagePath = uploadImage($_FILES['reply_image']);
+    if (isset($_FILES['image']) && $_FILES['image']['error'] == UPLOAD_ERR_OK) {
+        $imagePath = "uploads/" . basename($_FILES["image"]["name"]);
+        move_uploaded_file($_FILES['image']['tmp_name'], $imagePath);
     }
 
     $sql = "INSERT INTO replies (comment_id, author, content, created_at, parent_id, image_path) VALUES (?, ?, ?, NOW(), ?, ?)";

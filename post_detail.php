@@ -31,6 +31,9 @@
             while($reply = $reply_result->fetch_assoc()) {
                 echo "<div class='reply'>";
                 echo "<p>" . htmlspecialchars($reply["content"]) . "</p>";
+                if (!empty($reply["image_path"])) {
+                    echo "<img src='/" . $reply["image_path"] . "' alt='Comment Image'>";
+                }
                 echo "<p class='reply-meta'>Replied by: " . htmlspecialchars($reply["author"]) . " on " . $reply["created_at"];
                 echo " <button onclick='toggleReplyForm(" . $comment_id . ", " . $reply['id'] . ")'>Reply</button></p>";
                 displayReplies($conn, $comment_id, $reply['id'], $level + 1, $post_id, $user_name);
@@ -54,10 +57,11 @@
 
             echo "<div class='comment-form'>";
             echo "<h3>Leave a comment:</h3>";
-            echo "<form action='post_comment.php' method='post'>";
+            echo "<form action='post_comment.php' method='post'  enctype='multipart/form-data'>";
             echo "<input type='hidden' name='post_id' value='" . $post_id . "'>";
             echo "<input type='hidden' name='author' value='" . $user_name . "'>";
             echo "<textarea name='content' placeholder='Your comment' required></textarea>";
+            echo "<input type='file' name='image'>";
             echo "<button type='submit'>Submit comment</button>";
             echo "</form>";
             echo "</div>";
@@ -70,18 +74,22 @@
                 while($comment = $comment_result->fetch_assoc()) {
                     echo "<div class='comment'>";
                     echo "<p>" . htmlspecialchars($comment["content"]) . "</p>";
+                    if (!empty($comment["image_path"])) {
+                        echo "<img src='/" . $comment["image_path"] . "' alt='Comment Image'>";
+                    }
                     echo "<p class='comment-meta'>Commented by: " . htmlspecialchars($comment["author"]) . " on " . $comment["created_at"];
                     echo "<button onclick='toggleReplyForm(" . $comment['id'] . ")'>Reply</button></p>";
 
                     displayReplies($conn, $comment['id'], null, 0, $post_id, $user_name);
 
                     echo "<div class='reply-form' id='reply-form-" . $comment['id'] . "' style='display:none;'>";
-                    echo "<form action='post_reply.php' method='post'>";
+                    echo "<form action='post_reply.php' method='post' enctype='multipart/form-data'>";
                     echo "<input type='hidden' name='comment_id' value='" . $comment['id'] . "'>";
                     echo "<input type='hidden' name='post_id' value='" . $post_id . "'>";
                     echo "<input type='hidden' name='parent_id' value=''>";
                     echo "<input type='hidden' name='author' value='" . $user_name . "'>";
                     echo "<textarea name='content' placeholder='Your reply' required></textarea>";
+                    echo "<input type='file' name='image'>";
                     echo "<button type='submit'>Submit reply</button>";
                     echo "</form>";
                     echo "</div>";
